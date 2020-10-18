@@ -1,101 +1,78 @@
 const mongoose = require('./db');
-const { logger } = require('./logger');
-const repositorioUsuarios = require('../src/repositorios/repositorioUsuarios');
-const repositorioDeOrganizaciones = require('../src/repositorios/repositorioDeOrganizaciones');
-const { administrador, solicitante } = require('../src/modelos/roles');
-const Insumos = require('../src/modelos/insumos');
+const logger = require('./logger');
+const UsersRepository = require('../src/repositories/usersRepository');
+const OrganizationsRepository = require('../src/repositories/organizationsRepository');
+const { applicant, administrator } = require('../src/models/roles');
+const { protectiveMasks, faceMasks, ventilators, medicalGloves, medicines } = require('../src/models/supplies');
 
-const seedearDB = async () => {
-  logger.serverInfo(`Creando usuario administrador inicial`);
+const seedDB = async () => {
+  logger.serverInfo('Creating Admin and User...');
 
-  const emailAdministrador = 'admin@insumos.com';
-  const usuarioAdministrador = await repositorioUsuarios.obtenerPorEmail(
-    emailAdministrador);
+  const administratorEmail = 'administrator@insumos.com';
+  const administratorUser = await UsersRepository.findByEmail(administratorEmail);
 
-  const emailDave = 'dave@insumos.com';
-  const dave = await repositorioUsuarios.obtenerPorEmail(
-    emailDave);
+  const applicantEmail = 'applicant@insumos.com';
+  const applicantUser = await UsersRepository.findByEmail(applicantEmail);
 
-  const emailMartin = 'martin@insumos.com';
-  const martin = await repositorioUsuarios.obtenerPorEmail(
-    emailAdministrador);
-
-  if(!usuarioAdministrador && !dave && !martin) {
-    await repositorioUsuarios.agregar({
-      nombre: 'Admin',
-      email: emailAdministrador,
-      telefono: '1122223333',
-      entidad: 'UNQ',
-      cargo: 'Admin de insumos',
-      localidad: 'Bernal',
-      rol: administrador,
+  if(!administratorUser && !applicantUser) {
+    await UsersRepository.create({
+      name: 'Administrator',
+      email: administratorEmail,
+      phoneNumber: '1122223333',
+      entity: 'UNQ',
+      position: 'Administrator',
+      locality: 'Ville',
+      role: administrator,
     });
 
-    await repositorioUsuarios.agregar({
-      nombre: 'Dave',
-      email: emailDave,
-      telefono: '43211234',
-      entidad: 'UNQ',
-      cargo: 'Estudiante',
-      localidad: 'Hudson',
-      rol: solicitante,
+    await UsersRepository.create({
+      name: 'Applicant',
+      email: applicantEmail,
+      phoneNumber: '1122223333',
+      entity: 'UNQ',
+      position: 'Applicant',
+      locality: 'Ville',
+      role: applicant,
     });
 
-    await repositorioUsuarios.agregar({
-      nombre: 'Martin',
-      email: emailMartin,
-      telefono: '12344321',
-      entidad: 'UNQ',
-      cargo: 'Estudiante',
-      localidad: 'Capital',
-      rol: solicitante,
-    });
-
-    logger.serverInfo(
-      `Se ha creado el usuario administrador inicial satisfactoriamente`);
+    logger.serverInfo('Admin and User created successfully.');
   } else {
-    logger.serverInfo(`El usuario administrador ya existía previamente`);
+    logger.serverInfo('Admin and User were already created.');
   }
 
-  logger.serverInfo(`Creando organizaciones iniciales`);
+  logger.serverInfo('Creating Organizations...');
 
-  const unqEmail = 'unq_labs@gmail.com';
-  const bernalEmail = 'bernal_labs@gmail.com';
-  const unqLaboratorio = await repositorioDeOrganizaciones.obtenerPorEmail(
-    unqEmail);
-  const bernalProveedor = await repositorioDeOrganizaciones.obtenerPorEmail(
-    bernalEmail);
+  const labs1 = 'labs_1@gmail.com';
+  const labs2 = 'labs_2@gmail.com';
+  const labs1Organization = await OrganizationsRepository.findByEmail(labs1);
+  const labs2Organization = await OrganizationsRepository.findByEmail(labs2);
 
-  if(!bernalProveedor && !unqLaboratorio) {
-    await repositorioDeOrganizaciones.agregar({
-      nombre: 'UNQ LABS',
-      email: unqEmail,
-      telefono: '1122223333',
-      localidad: 'Bernal',
-      insumos: [Insumos.medicamentos, Insumos.guantes],
+  if(!labs1Organization && !labs2Organization) {
+    await OrganizationsRepository.create({
+      name: 'LABS 1',
+      email: labs1,
+      phoneNumber: '1122223333',
+      locality: 'Ville',
+      supplies: [protectiveMasks, faceMasks]
     });
 
-    await repositorioDeOrganizaciones.agregar({
-      nombre: 'Bernal laboratorio',
-      email: bernalEmail,
-      telefono: '3322221111',
-      localidad: 'Bernal',
-      insumos: [
-        Insumos.guantes,
-        Insumos.respiradores,
-        Insumos.barbijos,
-        Insumos.mascarasProtectoras],
+    await OrganizationsRepository.create({
+      name: 'LABS 2',
+      email: labs2,
+      phoneNumber: '3322221111',
+      locality: 'Ville',
+      supplies: [ventilators, medicalGloves, medicines]
     });
 
-    logger.serverInfo('Se crearon las organizaciones');
+    logger.serverInfo('Organizations created successfully.');
   } else {
-    logger.serverInfo('Las organizacioens ya existían');
+    logger.serverInfo('Organizations were already created.');
   }
 
   mongoose.disconnect();
 };
 
-seedearDB();
+seedDB();
 
 
 
