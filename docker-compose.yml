@@ -1,37 +1,19 @@
 version: '3.1'
 services:
-    frontend:
-        build: 
-            dockerfile: Dockerfile
-            context: ./frontend
-        ports:
-            - 3000:3000
-        depends_on: 
-            - backend
-    backend:
-        build:  
-            dockerfile: Dockerfile
-            context: ./backend
-        ports:
-            - 4000:4000
-        depends_on: 
-            - mongo
-            - mongo-express
-    mongo:
-        image: mongo
-        restart: always
-        ports:
-            - 27017:27017
-        # environment:
-        #   MONGO_INITDB_ROOT_USERNAME: arq2020q1
-        #   MONGO_INITDB_ROOT_PASSWORD: arq2020q1
-    mongo-express:
-        image: mongo-express
-        restart: always
-        ports:
-            - 8081:8081
-        depends_on: 
-            - mongo
-        # environment:
-        #   ME_CONFIG_MONGODB_ADMINUSERNAME: arq2020q1
-        #   ME_CONFIG_MONGODB_ADMINPASSWORD: arq2020q1
+  mongo:
+    image: mongo
+    restart: always
+    ports:
+      - 27017:27017
+    # environment:
+    #   MONGO_INITDB_ROOT_USERNAME: arq2020q1
+    #   MONGO_INITDB_ROOT_PASSWORD: arq2020q1
+
+  mongo-express:
+    image: mongo-express
+    restart: always
+    ports:
+      - 8081:8081
+    # environment:
+    #   ME_CONFIG_MONGODB_ADMINUSERNAME: arq2020q1
+    #   ME_CONFIG_MONGODB_ADMINPASSWORD: arq2020q1
