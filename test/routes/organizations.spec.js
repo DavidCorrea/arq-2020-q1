@@ -49,35 +49,18 @@ describe('/organizations', () => {
     });
   
     context('When the user token is present', () => {
-      context('When the current user is an Admin', () => {
-        it('Returns all the supplies' , (done) => {
-          request(App)
-            .get('/organizations')
-            .set('userToken', tokenForUser(adminUser))
-            .expect('Content-Type', /json/)
-            .expect(200, {})
-            .end((_, { body }) => {
-              const organizations = body;
-              assert.strictEqual(organizations.length, 3);
-    
-              done();
-            });
-        });
-      });
+      it('Returns all the supplies' , (done) => {
+        request(App)
+          .get('/organizations')
+          .set('userToken', tokenForUser(adminUser))
+          .expect('Content-Type', /json/)
+          .expect(200, {})
+          .end((_, { body }) => {
+            const organizations = body;
+            assert.strictEqual(organizations.length, 3);
   
-      context('When the current user is not an Admin', () => {
-        it('Returns an error' , (done) => {
-          request(App)
-            .get('/organizations')
-            .set('userToken', tokenForUser(anUser))
-            .expect('Content-Type', /json/)
-            .end((_, response) => {
-              assert.strictEqual(response.status, 403);
-              assert.strictEqual(response.error.text, 'Only administrators can perform this action.');
-    
-              done();
-            });
-        });
+            done();
+          });
       });
     });
   
