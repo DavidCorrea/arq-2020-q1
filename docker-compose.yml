@@ -17,3 +17,11 @@ services:
     # environment:
     #   ME_CONFIG_MONGODB_ADMINUSERNAME: arq2020q1
     #   ME_CONFIG_MONGODB_ADMINPASSWORD: arq2020q1
+
+  insumos-backend:
+    image: arq2020-insumos-backend
+    restart: always
+    ports: 
+      - 4000:4000
+    depends_on:
+      - mongo

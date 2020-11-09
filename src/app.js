@@ -1,8 +1,4 @@
 require('newrelic');
-require('dotenv').config();
-const { stMonitor } = require('sematext-agent-express');
-stMonitor.start()
-const tracer = require('dd-trace').init()
 
 const express = require('express');
 const cors = require('cors');

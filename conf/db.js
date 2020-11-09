@@ -34,19 +34,12 @@ const setupDevDB = () => {
   mongoose.connect('mongodb://mongo:27017/dev', mongooseOpts);
 };
 
-const setupLocalDB = () => {
-  mongoose.connect('mongodb://localhost:27017/dev', mongooseOpts);
-};
-
 switch(process.env.NODE_ENV) {
   case ('test'):
     setupTestDB();
     break;
   case ('production'):
     setupProdDB();
-    break;
-  case ('local'):
-    setupLocalDB();
     break;
   default:
     setupDevDB();
