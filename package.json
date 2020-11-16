@@ -4,7 +4,8 @@
   "description": "Universidad de Quilmes - Arquitectura de Software 2020 - Segundo Semestre",
   "main": "app.js",
   "scripts": {
-    "start": "node index.js",
+    "start": "node --abort-on-uncaught-exception --max_old_space_size=8048 index.js",
+    "start-production": "NODE_ENV=production MONGODB_URI=mongodb://mongo:27017/dev JWT_TOKEN=abc123 node --abort-on-uncaught-exception --max_old_space_size=8048 index.js",
     "test": "NODE_ENV=test mocha test/**/*.spec.js",
     "seed": "NODE_ENV=local node conf/seed.js"
   },
@@ -19,6 +20,7 @@
   },
   "homepage": "https://github.com/DavidCorrea/arq-2020-q2",
   "dependencies": {
+    "compression": "^1.7.4",
     "cors": "^2.8.5",
     "dd-trace": "^0.26.1",
     "dotenv": "^8.2.0",

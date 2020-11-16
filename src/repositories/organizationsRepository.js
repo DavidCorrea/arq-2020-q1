@@ -3,7 +3,7 @@ const mongoose = require('../../conf/db');
 const OrganizationModel = mongoose.model('Organization', 
   new mongoose.Schema({
     name: String,
-    email: String,
+    email: { type: String, index: true },
     phoneNumber: String,
     locality: String,
     supplies: [String],
@@ -18,11 +18,11 @@ class OrganizationsRepository {
   }
 
   findAll() {
-    return OrganizationModel.find({});
+    return OrganizationModel.find({}).lean();
   }
 
   async findByEmail(email) {
-    return OrganizationModel.findOne({ email }).exec();
+    return OrganizationModel.findOne({ email }).lean().exec();
   }
 }
 

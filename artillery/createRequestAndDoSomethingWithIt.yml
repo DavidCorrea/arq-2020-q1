@@ -1,0 +1,144 @@
+config:
+  target: "http://localhost:4000"
+  phases:
+    - duration: 60
+      arrivalRate: 5
+      name: Warm up
+    - duration: 120
+      arrivalRate: 5
+      rampTo: 14
+      name: Ramp up load
+    - duration: 180
+      arrivalRate: 14
+      name: Sustained load
+  processor: "./logging.js"
+  defaults:
+    headers:
+      Content-Type: 'application/json'
+scenarios:
+  - name: "Create a request and Approve a request"
+    flow:
+      - post:
+          url: "/sessions"
+          json:
+            email: "applicant@insumos.com"
+          capture:
+            json: "$.token"
+            as: "applicantToken"
+      - get:
+          url: "/organizations"
+          headers:
+            userToken: "{{ applicantToken }}"
+          capture:
+            - json: "$[0]"
+              as: "organization"
+            - json: "$[0].supplies[0]"
+              as: "supply"
+      - post:
+          url: "/requests"
+          headers:
+            userToken: "{{ applicantToken }}"
+          json:
+            area: "Health Care"
+            supply: "{{ supply }}"
+      - post:
+          url: "/sessions"
+          json:
+            email: "administrator@insumos.com"
+          capture:
+            json: "$.token"
+            as: "administratorToken"
+      - get:
+          url: "/requests"
+          headers:
+            userToken: "{{ administratorToken }}"
+          capture:
+            json: "$[?(@.state=='PENDING')]"
+            as: "pendingRequest"
+      - post:
+          url: "/requests/{{ pendingRequest._id }}/approve"
+          headers:
+            userToken: "{{ administratorToken }}"
+          json:
+            provider: "{{ organization.name }}"
+  - name: "Create a request and Cancel a request"
+    flow:
+      - post:
+          url: "/sessions"
+          json:
+            email: "applicant@insumos.com"
+          capture:
+            json: "$.token"
+            as: "applicantToken"
+      - get:
+          url: "/organizations"
+          headers:
+            userToken: "{{ applicantToken }}"
+          capture:
+            - json: "$[0]"
+              as: "organization"
+            - json: "$[0].supplies[0]"
+              as: "supply"
+      - post:
+          url: "/requests"
+          headers:
+            userToken: "{{ applicantToken }}"
+          json:
+            area: "Health Care"
+            supply: "{{ supply }}"
+      - get:
+          url: "/requests"
+          headers:
+            userToken: "{{ applicantToken }}"
+          capture:
+            json: "$[?(@.state=='PENDING')]"
+            as: "requestToCancel"
+      - post:
+          url: "/requests/{{ requestToCancel._id }}/cancel"
+          headers:
+            userToken: "{{ applicantToken }}"
+  - name: "Create a request and Reject a request"
+    flow:
+      - post:
+          url: "/sessions"
+          json:
+            email: "applicant@insumos.com"
+          capture:
+            json: "$.token"
+            as: "applicantToken"
+      - get:
+          url: "/organizations"
+          headers:
+            userToken: "{{ applicantToken }}"
+          capture:
+            - json: "$[0]"
+              as: "organization"
+            - json: "$[0].supplies[0]"
+              as: "supply"
+      - post:
+          url: "/requests"
+          headers:
+            userToken: "{{ applicantToken }}"
+          json:
+            area: "Health Care"
+            supply: "{{ supply }}"
+      - post:
+          url: "/sessions"
+          json:
+            email: "administrator@insumos.com"
+          capture:
+            json: "$.token"
+            as: "administratorToken"
+      - get:
+          url: "/requests"
+          headers:
+            userToken: "{{ administratorToken }}"
+          capture:
+            json: "$[?(@.state=='PENDING')]"
+            as: "pendingRequest"
+      - post:
+          url: "/requests/{{ pendingRequest._id }}/reject"
+          headers:
+            userToken: "{{ administratorToken }}"
+          json:
+            rejectionReason: "'Already Fulfilled.'"

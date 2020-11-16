@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const mongooseOpts = { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false };
+const mongooseOpts = { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false, autoIndex: false };
 
 const setupTestDB = () => {
   const { MongoMemoryServer } = require('mongodb-memory-server');

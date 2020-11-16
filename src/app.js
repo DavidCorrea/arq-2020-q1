@@ -1,6 +1,7 @@
 require('newrelic');
 
 const express = require('express');
+const compression = require('compression');
 const cors = require('cors');
 const requestLoggerMiddleware = require('./middlewares/requestLoggerMiddleware');
 const usersRoutes = require('./routes/users');
@@ -11,6 +12,7 @@ const app = express();
 
 app.use(express.json());
 app.use(cors());
+app.use(compression());
 app.use(requestLoggerMiddleware);
 
 app.use('/', sessionsRoutes);

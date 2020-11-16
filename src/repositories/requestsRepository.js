@@ -3,7 +3,7 @@ const Request = require('../models/request');
 
 const RequestModel = mongoose.model('Request', 
   new mongoose.Schema({
-    userId: mongoose.Types.ObjectId,
+    userId: { type: mongoose.Types.ObjectId, index: true },
     area: String,
     supply: String,
     state: String,
@@ -21,19 +21,19 @@ class RequestsRepository {
   }
 
   findAll() {
-    return RequestModel.find({});
+    return RequestModel.find({}).lean();
   }
 
   async findAllByUserId(userId) {
-    return RequestModel.find({ userId }).exec();
+    return RequestModel.find({ userId }).lean().exec();
   }
 
   async findByIdAndUserId(id, userId) {
-    return RequestModel.findOne({ _id: id, userId }).exec();
+    return RequestModel.findOne({ _id: id, userId }).lean().exec();
   }
 
   async findById(id) {
-    return RequestModel.findOne({ _id: id }).exec();
+    return RequestModel.findOne({ _id: id }).lean().exec();
   }
 
   async cancel(id, userId) {

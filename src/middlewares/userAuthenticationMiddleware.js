@@ -4,7 +4,7 @@ const User = require('../models/user')
 
 const userAuthenticationMiddleware = async (req, res, next) => {
   const token = req.headers.usertoken;
-  await new Promise(r => setTimeout(r, Math.random() * (15000 - 500) + 500));
+  // await new Promise(r => setTimeout(r, Math.random() * (15000 - 500) + 500));
 
   if(token) {
     validateToken(token, (decodedToken) => {

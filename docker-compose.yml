@@ -1,4 +1,4 @@
-version: '3.1'
+version: '2.2'
 services:
   mongo:
     image: mongo
@@ -19,9 +19,18 @@ services:
     #   ME_CONFIG_MONGODB_ADMINPASSWORD: arq2020q1
 
   insumos-backend:
+    # docker build -t arq2020-insumos-backend
+    # dcompose exec insumos-backend sh
+    # artillery run ./artillery/createRequestAndDoSomethingWithIt.yml
     image: arq2020-insumos-backend
-    restart: always
     ports: 
       - 4000:4000
     depends_on:
       - mongo
+    environment:
+      - NODE_ENV=production
+      - MONGODB_URI=mongodb://mongo:27017/dev
+      - JWT_TOKEN=abc123
+      # - NODE_OPTIONS=--max_old_space_size=8048
+    cpus: 2.5
+    mem_limit: 400mb

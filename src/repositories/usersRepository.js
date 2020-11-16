@@ -4,7 +4,7 @@ const { applicant } = require('../models/roles');
 const UserModel = mongoose.model('User', 
   new mongoose.Schema({
     name: String,
-    email: String,
+    email: { type: String, index: true },
     phoneNumber: String,
     entity: String,
     position: String,
@@ -21,11 +21,11 @@ class UsersRepository {
   }
 
   findAll() {
-    return UserModel.find({});
+    return UserModel.find({}).lean();
   }
 
   async findByEmail(email) {
-    return UserModel.findOne({ email }).exec();
+    return UserModel.findOne({ email }).lean().exec();
   }
 
   async count() {
