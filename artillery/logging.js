@@ -1,6 +1,6 @@
 function printStatus (requestParams, response, context, ee, next) {
-  console.log(response.body);
-
+  // console.log(context);
+  // console.log(response.body);
   return next();
 }
 

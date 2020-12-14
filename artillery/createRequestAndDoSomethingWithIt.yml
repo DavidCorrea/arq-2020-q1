@@ -1,16 +1,22 @@
 config:
   target: "http://localhost:4000"
+  ensure:
+    p95: 100
+    max: 500
   phases:
     - duration: 60
       arrivalRate: 5
       name: Warm up
     - duration: 120
       arrivalRate: 5
-      rampTo: 14
+      rampTo: 10
       name: Ramp up load
-    - duration: 180
-      arrivalRate: 14
+    - duration: 300
+      arrivalRate: 10
       name: Sustained load
+    - duration: 300
+      arrivalRate: 15
+      name: Stress
   processor: "./logging.js"
   defaults:
     headers:
@@ -55,7 +61,8 @@ scenarios:
           capture:
             json: "$[?(@.state=='PENDING')]"
             as: "pendingRequest"
-      - post:
+          afterResponse: 'printStatus'  
+      - patch:
           url: "/requests/{{ pendingRequest._id }}/approve"
           headers:
             userToken: "{{ administratorToken }}"
@@ -93,7 +100,7 @@ scenarios:
           capture:
             json: "$[?(@.state=='PENDING')]"
             as: "requestToCancel"
-      - post:
+      - patch:
           url: "/requests/{{ requestToCancel._id }}/cancel"
           headers:
             userToken: "{{ applicantToken }}"
@@ -136,7 +143,7 @@ scenarios:
           capture:
             json: "$[?(@.state=='PENDING')]"
             as: "pendingRequest"
-      - post:
+      - patch:
           url: "/requests/{{ pendingRequest._id }}/reject"
           headers:
             userToken: "{{ administratorToken }}"
