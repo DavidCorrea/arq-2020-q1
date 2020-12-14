@@ -21,11 +21,11 @@ class RequestsRepository {
   }
 
   findAll() {
-    return RequestModel.find({}).lean();
+    return RequestModel.find({ state: Request.STATES.PENDING }).limit(10).lean();
   }
 
   async findAllByUserId(userId) {
-    return RequestModel.find({ userId }).lean().exec();
+    return RequestModel.find({ userId, state: Request.STATES.PENDING }).limit(10).lean().exec();
   }
 
   async findByIdAndUserId(id, userId) {
